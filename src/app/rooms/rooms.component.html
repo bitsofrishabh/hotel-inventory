@@ -1,0 +1,27 @@
+<div class="container-fluid">
+
+  <app-header></app-header>
+  <div [hidden]="hideRoom">
+    Number of Rooms:
+    <div [innerText]="numberOfRooms"></div>
+  </div>
+
+  <!-- {{rooms?.availableRooms ?? "No rooms"}} -->
+
+  <router-outlet></router-outlet>
+  <button class="btn btn-primary" routerLink="add">Add Room</button>
+
+  <div>
+    <input type="number" class="form-control" [formControl]="priceFilter">
+  </div>
+
+  <div *ngIf="rooms.availableRooms > 0">
+    <app-rooms-list [rooms]="roomList" [price]="priceFilter.value" (selectedRoom)="selectRoom($event)"></app-rooms-list>
+  </div>
+
+  <!-- <button (click)="toggle()">Toggle</button>
+  <button (click)="edit()">Edit</button>
+  <button (click)="delete()">Delete</button> -->
+</div>
+
+<!-- <router-outlet> </router-outlet> -->

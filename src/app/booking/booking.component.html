@@ -1,0 +1,139 @@
+<h1>Room Booking Form</h1>
+
+<form class="form-display" [formGroup]="bookingFormGroup" (ngSubmit)="addBooking()">
+  <mat-form-field class="form" appearance="fill">
+    <mat-label>Enter Room</mat-label>
+    <input matInput type="text" placeholder="roomId" formControlName="roomId" />
+  </mat-form-field>
+  <mat-form-field class="form" appearance="fill">
+    <mat-label>Guest Name</mat-label>
+    <input matInput type="text" placeholder="guestName" formControlName="guestName" />
+    {{bookingFormGroup.get('guestName')?.errors | json}}
+    <mat-error *ngIf="bookingFormGroup.get('guestName')?.hasError('minlength')">
+      Guest name should be 5 char
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field class="form" appearance="fill">
+    <mat-label>Provide an Email</mat-label>
+    <input matInput type="email" placeholder="email" formControlName="guestEmail" />
+  </mat-form-field>
+  <mat-form-field class="form" appearance="fill">
+    <mat-label>Mobile number</mat-label>
+    <input matInput type="number" placeholder="mobile" formControlName="mobileNumber" />
+  </mat-form-field>
+  <mat-form-field class="form" appearance="fill">
+    <mat-label>Booking amount</mat-label>
+    <input matInput type="number" placeholder="bookingAmount" formControlName="bookingAmount" />
+  </mat-form-field>
+  <mat-form-field *ngIf="bookingFormGroup.get('passport')" class="form" appearance="fill">
+    <mat-label>Enter Passport Number</mat-label>
+    <input matInput type="number" placeholder="passport" formControlName="passport" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Checkin date</mat-label>
+    <input matInput [matDatepicker]="picker" formControlName="checkinDate" />
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  &nbsp;&nbsp; &nbsp;&nbsp;
+  <mat-form-field>
+    <mat-label>Checkout date</mat-label>
+    <input matInput [matDatepicker]="checkout" formControlName="checkoutDate" />
+    <mat-datepicker-toggle matSuffix [for]="checkout"></mat-datepicker-toggle>
+    <mat-datepicker #checkout></mat-datepicker>
+  </mat-form-field>
+  &nbsp;&nbsp; &nbsp;&nbsp;
+
+  <mat-form-field>
+    <mat-label>Booking date</mat-label>
+    <input matInput [matDatepicker]="booking" formControlName="bookingDate" />
+    <mat-datepicker-toggle matSuffix [for]="booking"></mat-datepicker-toggle>
+    <mat-datepicker #booking></mat-datepicker>
+  </mat-form-field>
+  <br />
+
+  <div formGroupName="address">
+    <mat-accordion class="example-headers-align" multi="">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title> Address </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-form-field class="form" appearance="fill">
+          <mat-label>Address Line 1</mat-label>
+          <input matInput type="text" placeholder="addressLine1" formControlName="addressLine1" />
+          <mat-error *ngIf="bookingFormGroup.get('address.addressLine1')?.hasError('required')">
+            Address Line 1 is required
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="form" appearance="fill">
+          <mat-label>Address Line 2</mat-label>
+          <input matInput type="text" placeholder="addressLine2" formControlName="addressLine2" />
+        </mat-form-field>
+        <mat-form-field class="form" appearance="fill">
+          <mat-label>City</mat-label>
+          <input matInput type="text" placeholder="city" formControlName="city" />
+        </mat-form-field>
+
+        <mat-form-field class="form" appearance="fill">
+          <mat-label>State</mat-label>
+          <input matInput type="text" placeholder="state" formControlName="state" />
+        </mat-form-field>
+        <mat-form-field class="form" appearance="fill">
+          <mat-label>Country</mat-label>
+          <input matInput type="text" placeholder="country" formControlName="country" />
+        </mat-form-field>
+        <mat-form-field class="form" appearance="fill">
+          <mat-label>Zipcode</mat-label>
+          <input matInput type="number" placeholder="zipcode" formControlName="zipcode" />
+        </mat-form-field>
+        <mat-action-row>
+          <button mat-button color="primary">Next</button>
+        </mat-action-row>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+
+  <div formArrayName="guests">
+    <mat-accordion class="example-headers-align" multi="">
+      <mat-expansion-panel *ngFor="let guest of guests.controls; let i = index">
+        <mat-expansion-panel-header>
+          <mat-panel-title> Guest {{ i + 1 }} </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div [formGroupName]="i">
+          <mat-form-field>
+            <mat-label>Guest Name</mat-label>
+            <input matInput type="text" placeholder="guestName" formControlName="guestName" />
+            <mat-error *ngIf="bookingFormGroup.get(['guests',i,'guestName'])?.hasError('required')">
+              Guest Name {{i +1}} is required
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Age</mat-label>
+            <input matInput type="number" placeholder="age" formControlName="age" />
+          </mat-form-field>
+        </div>
+        <mat-action-row>
+          <button mat-button type="button" (click)="removeGuest(i)" color="primary">Remove</button>
+        </mat-action-row>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+
+  <button class="room-button" type="button" (click)="addGuest()" mat-raised-button color="primary">
+    Add Guest
+  </button>
+  &nbsp; &nbsp; &nbsp;
+  <button class="room-button" [disabled]="bookingFormGroup.invalid" mat-raised-button color="primary">
+    Book Room
+  </button>
+  &nbsp; &nbsp; &nbsp;
+  <button class="room-button" type="button" (click)="addPassport()" mat-raised-button color="primary">
+    Add Passport
+  </button>
+  &nbsp; &nbsp; &nbsp;
+  <button class="room-button" type="button" (click)="deletePassport()" mat-raised-button color="primary">
+    Delete Passport
+  </button>
+</form>
